@@ -5,13 +5,9 @@ import menu.Menu;
 
 public class PesananMakanan extends MenuPesanan {
     
+    // Array nampung kuantitas pesanan item
     private static int[] isiPesanan = new int[Makanan.getDaftarMakanan().length];
-    private static ItemPesanan[] pesananMakanan = new ItemPesanan[10];
-
-    public static ItemPesanan[] getDetailPesanan() {
-        return pesananMakanan;
-    }
-
+    
     public PesananMakanan() {
         super(isiPesanan, 5, 2, "Makanan");
     }
@@ -20,11 +16,13 @@ public class PesananMakanan extends MenuPesanan {
     public Menu[] getDaftarMenu() {
         return Makanan.getDaftarMakanan();
     }
-
+    
+    // Untuk ambil array int yang nampung "kuantitas" pesanan item
     public static int[] getPesanan() {
         return isiPesanan;
     }
 
+    // Untuk mengecek apakah suatu kode terdapat di dalam daftar minuman yang tersedia
     public static boolean kodeAdaDiMakanan(String kode) {
         for (Makanan makanan : Makanan.getDaftarMakanan()) {
             if (makanan != null && makanan.getKode().equals(kode)) {
@@ -33,6 +31,5 @@ public class PesananMakanan extends MenuPesanan {
         }
         return false;
     }
-
 
 }

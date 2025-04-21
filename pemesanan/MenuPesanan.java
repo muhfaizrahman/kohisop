@@ -6,10 +6,10 @@ import menu.*;
 public abstract class MenuPesanan {
     protected Scanner input = new Scanner(System.in);
 
-    int[] itemPesanan;
-    int maxJenis;
-    int maxKuantitas;
-    String kategori;
+    protected int[] itemPesanan;
+    protected int maxJenis;
+    protected int maxKuantitas;
+    protected String kategori;
     
     public MenuPesanan(int[] itemPesanan, int maxJenis, int maxKuantitas, String kategori) {
         this.itemPesanan = itemPesanan;
@@ -18,13 +18,14 @@ public abstract class MenuPesanan {
         this.kategori = kategori;
     }
     
+    public abstract Menu[] getDaftarMenu();
+    
     public String getKategori() {
         return kategori;
     }
 
-    public abstract Menu[] getDaftarMenu();
-
-    public int[] getItemPesanan() {
+    // Untuk ambil array int yang nampung kuantitas pesanan item
+    public int[] getQTYItemPesanan() {
         return itemPesanan;
     }
     

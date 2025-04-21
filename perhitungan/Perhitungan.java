@@ -7,44 +7,49 @@ import pemesanan.PesananMinuman;
 
 public class Perhitungan {
 
-    // Kode Refactor
+    // Mekanisme perhitungan menu
+    // Method untuk hitung (harga * jumlah) tiap item
     public static double hitungTotalPerMenu(MenuPesanan pesanan, String kode) {
         Menu[] daftarMenu = pesanan.getDaftarMenu();
-        int[] itemPesanan = pesanan.getItemPesanan();
+        int[] QTYItem = pesanan.getQTYItemPesanan();
 
         for (int i = 0; i < daftarMenu.length; i++) {
-            if (daftarMenu[i] != null && daftarMenu[i].getKode().equals(kode)) {
+            if (daftarMenu[i].getKode().equals(kode)) {
                 double harga = daftarMenu[i].getHarga();
-                int jumlah = itemPesanan[i];
+                int jumlah = QTYItem[i];
                 return harga * jumlah;
             }
         }
         return 0;
     }
     
+    // Method untuk hitung total tagihan tiap kategori (di luar pajak)
     public static double hitungTagihanKategori(MenuPesanan pesanan) {
         double total = 0;
         Menu[] daftarMenu = pesanan.getDaftarMenu();
-        int[] itemPesanan = pesanan.getItemPesanan();
+        int[] QTYItem = pesanan.getQTYItemPesanan();
 
         for (int i = 0; i < daftarMenu.length; i++) {
-            if (daftarMenu[i] != null && itemPesanan[i] > 0) {
-                total += daftarMenu[i].getHarga() * itemPesanan[i];
+            if (QTYItem[i] > 0) {
+                total += daftarMenu[i].getHarga() * QTYItem[i];
             }
         }
         return total;
     }
     
+    // Method untuk hitung total tagihan keseluruhan (di luar pajak)
     public static double hitungTagihanTotal(PesananMinuman minuman, PesananMakanan makanan) {
         return hitungTagihanKategori(minuman) + hitungTagihanKategori(makanan);
     }
     
-    // Hitung Pajak
-    public static double getPajak(MenuPesanan pesanan, String kode) {
+
+    // Mekanisme Perhitungan Pajak
+    // Method untuk mendapatkan persentase pajak suatu item
+    public static double getPersentasePajak(MenuPesanan pesanan, String kode) {
         Menu[] daftarMenu = pesanan.getDaftarMenu();
 
         for (int i = 0; i < daftarMenu.length; i++) {
-            if (daftarMenu[i] != null && daftarMenu[i].getKode().equals(kode)) {
+            if (daftarMenu[i].getKode().equals(kode)) {
                 double harga = daftarMenu[i].getHarga();
 
                 if (pesanan instanceof PesananMinuman) {
@@ -63,24 +68,36 @@ public class Perhitungan {
         return 0;
     }
 
-    public static double getPajakPerJenis(MenuPesanan pesanan) {
-        double total = 0;
+    // Method untuk kalkulasi total harga untuk suatu item * persentase pajak item tersebut
+    public static double getBesarPajakIDR(MenuPesanan pesanan, String kode) {
         Menu[] daftarMenu = pesanan.getDaftarMenu();
-        int[] itemPesanan = pesanan.getItemPesanan();
 
         for (int i = 0; i < daftarMenu.length; i++) {
-            if (daftarMenu[i] != null && itemPesanan[i] > 0) {
-                double pajakPerItem = getPajak(pesanan, daftarMenu[i].getKode());
-                total = pajakPerItem * hitungTotalPerMenu(pesanan, daftarMenu[i].getKode());
+            if (daftarMenu[i].getKode().equals(kode)) {
+                double persentasePajak = getPersentasePajak(pesanan, kode);
+                double hargaTotalPerMenu = hitungTotalPerMenu(pesanan, kode); 
+
+                return persentasePajak * hargaTotalPerMenu;
+            }
+        }
+        return 0;
+    }
+    
+    // Method untuk menghitung total pajak IDR yang terdapat dalam suatu kategori
+    public static double getPajakKategori(MenuPesanan pesanan) {
+        double total = 0;
+        Menu[] daftarMenu = pesanan.getDaftarMenu();
+        int[] QTYItem = pesanan.getQTYItemPesanan();
+
+        for (int i = 0; i < daftarMenu.length; i++) {
+            if (QTYItem[i] > 0) {
+                total += getBesarPajakIDR(pesanan, daftarMenu[i].getKode());
             }
         }
         return total;
     }
     
-    public static double getPajakKategori(MenuPesanan pesanan) {
-        return getPajakPerJenis(pesanan);
-    }
-    
+    // Method untuk hitung total pajak tagihan pelanggan kohisop
     public static double getPajakTagihan(PesananMinuman minuman, PesananMakanan makanan) {
         return getPajakKategori(minuman) + getPajakKategori(makanan);
     }

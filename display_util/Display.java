@@ -19,7 +19,7 @@ public class Display {
         System.out.printf("| %50s%s%51s |\n", "", "Kategori " + pesanan.getKategori(), "");
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
         System.out.printf("| %-5s | %-40s | %-10s | %-10s | %-12s | %-10s | %-12s |\n",
-        "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak", "Total Bayar");
+        "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak (%)", "Pajak (IDR)");
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n",
         "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
 
@@ -39,8 +39,8 @@ public class Display {
                             daftar[i].getHarga(),
                             jumlahlItem[i],
                             Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode) * 100,
-                            Perhitungan.getPajakPerJenis(pesanan)
+                            Perhitungan.getPersentasePajak(pesanan, kode) * 100,
+                            Perhitungan.getBesarPajakIDR(pesanan, kode)
                         );
                     }
                 }
@@ -61,8 +61,8 @@ public class Display {
                             daftar[i].getHarga(),
                             jumlahlItem[i],
                             Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode) * 100,
-                            Perhitungan.getPajakPerJenis(pesanan)
+                            Perhitungan.getPersentasePajak(pesanan, kode) * 100,
+                            Perhitungan.getBesarPajakIDR(pesanan, kode)
                         );
                     }
                 }
