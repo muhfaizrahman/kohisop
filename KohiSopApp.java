@@ -114,5 +114,7 @@ public class KohiSopApp {
         Display.displayKuitansi(pembayaran, pesananMinuman, pesananMakanan);
 
         input.close();
+
+        // ini kode revisi
     }
 }

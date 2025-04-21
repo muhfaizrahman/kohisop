@@ -53,10 +53,10 @@ public class Perhitungan {
                     else return harga * 0.11;
                 } else if (pesanan instanceof PesananMakanan) {
                     if (harga < 50) return (harga * 0.11);
-                    else return (harga * 0.08);
+                    else if (harga > 55) return (harga * 0.08);
+                    else return 0;
                 } else {
                     return 0;
-                    
                 }
             }
         }
