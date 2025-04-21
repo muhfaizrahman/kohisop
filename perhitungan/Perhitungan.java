@@ -49,11 +49,11 @@ public class Perhitungan {
 
                 if (pesanan instanceof PesananMinuman) {
                     if (harga < 50) return 0;
-                    else if (harga >= 50 && harga <= 55) return (harga * 0.08); 
-                    else return harga * 0.11;
+                    else if (harga >= 50 && harga <= 55) return 0.08; 
+                    else return 0.11;
                 } else if (pesanan instanceof PesananMakanan) {
-                    if (harga < 50) return (harga * 0.11);
-                    else if (harga > 55) return (harga * 0.08);
+                    if (harga < 50) return 0.11;
+                    else if (harga > 55) return 0.08;
                     else return 0;
                 } else {
                     return 0;
@@ -71,7 +71,7 @@ public class Perhitungan {
         for (int i = 0; i < daftarMenu.length; i++) {
             if (daftarMenu[i] != null && itemPesanan[i] > 0) {
                 double pajakPerItem = getPajak(pesanan, daftarMenu[i].getKode());
-                total += pajakPerItem * itemPesanan[i];
+                total = pajakPerItem * hitungTotalPerMenu(pesanan, daftarMenu[i].getKode());
             }
         }
         return total;

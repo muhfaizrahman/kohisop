@@ -19,7 +19,7 @@ public class Display {
         System.out.printf("| %50s%s%51s |\n", "", "Kategori " + pesanan.getKategori(), "");
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
         System.out.printf("| %-5s | %-40s | %-10s | %-10s | %-12s | %-10s | %-12s |\n",
-        "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak", "Total Pajak");
+        "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak", "Total Bayar");
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n",
         "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
 
@@ -33,14 +33,14 @@ public class Display {
 
                 for (int i = 0; i < daftar.length; i++) {
                     if (daftar[i].getKode().equals(kode)) {
-                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-10.2f | %-12.2f |\n",
+                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-9.2f%% | %-12.2f |\n",
                             daftar[i].getKode(),
                             daftar[i].getNama(),
                             daftar[i].getHarga(),
                             jumlahlItem[i],
                             Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode) * jumlahlItem[i]
+                            Perhitungan.getPajak(pesanan, kode) * 100,
+                            Perhitungan.getPajakPerJenis(pesanan)
                         );
                     }
                 }
@@ -55,14 +55,14 @@ public class Display {
                 
                 for (int i = 0; i < daftar.length; i++) {
                     if (daftar[i].getKode().equals(kode)) {
-                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-10.2f | %-12.2f |\n",
+                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-9.2f%% | %-12.2f |\n",
                             daftar[i].getKode(),
                             daftar[i].getNama(),
                             daftar[i].getHarga(),
                             jumlahlItem[i],
                             Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode),
-                            Perhitungan.getPajak(pesanan, kode) * jumlahlItem[i]
+                            Perhitungan.getPajak(pesanan, kode) * 100,
+                            Perhitungan.getPajakPerJenis(pesanan)
                         );
                     }
                 }
