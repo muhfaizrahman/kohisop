@@ -79,7 +79,7 @@ public class KohiSopApp {
                     break;
                 default:
                     System.out.println("Error: Mata uang tidak ditemukan. Coba lagi.");
-                break;
+                continue;
             }
         }
 
