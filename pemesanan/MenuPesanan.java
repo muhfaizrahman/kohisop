@@ -4,8 +4,7 @@ import java.util.Scanner;
 import menu.*;
 
 public abstract class MenuPesanan {
-    protected Scanner input = new Scanner(System.in);
-
+    
     protected int[] itemPesanan;
     protected int maxJenis;
     protected int maxKuantitas;
@@ -23,15 +22,16 @@ public abstract class MenuPesanan {
     public String getKategori() {
         return kategori;
     }
-
+    
     // Untuk ambil array int yang nampung kuantitas pesanan item
     public int[] getQTYItemPesanan() {
         return itemPesanan;
     }
     
     public void pesan(String kode) {
+        Scanner input = new Scanner(System.in);
         Menu[] daftarMenu = getDaftarMenu();
-
+        
         // Pengecekan kode menu yang diinputkan
         int index = -1;
         for (int i = 0; i < daftarMenu.length; i++) {

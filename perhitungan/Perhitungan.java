@@ -17,6 +17,7 @@ public class Perhitungan {
             if (daftarMenu[i].getKode().equals(kode)) {
                 double harga = daftarMenu[i].getHarga();
                 int jumlah = QTYItem[i];
+                
                 return harga * jumlah;
             }
         }

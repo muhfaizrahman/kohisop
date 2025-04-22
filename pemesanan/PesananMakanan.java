@@ -18,7 +18,7 @@ public class PesananMakanan extends MenuPesanan {
     }
     
     // Untuk ambil array int yang nampung "kuantitas" pesanan item
-    public static int[] getPesanan() {
+    public static int[] getQTYPesanan() {
         return isiPesanan;
     }
 

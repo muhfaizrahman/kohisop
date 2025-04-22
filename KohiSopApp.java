@@ -6,7 +6,6 @@ import channel_pembayaran.QRIS;
 import channel_pembayaran.Tunai;
 import display_util.Display;
 import mata_uang.EUR;
-import mata_uang.IMataUang;
 import mata_uang.JPY;
 import mata_uang.MYR;
 import mata_uang.MataUang;

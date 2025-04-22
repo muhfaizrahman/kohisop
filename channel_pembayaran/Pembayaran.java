@@ -2,6 +2,7 @@ package channel_pembayaran;
 
 import pemesanan.PesananMakanan;
 import pemesanan.PesananMinuman;
+import java.util.Scanner;
 
 public abstract class Pembayaran {
     protected double diskon;
@@ -12,7 +13,7 @@ public abstract class Pembayaran {
         this.biayaAdmin = biayaAdmin;
     }
 
-    public abstract void bayar(java.util.Scanner input, PesananMinuman pesananMinuman, PesananMakanan pesananMakanan);
+    public abstract void bayar(Scanner input, PesananMinuman pesananMinuman, PesananMakanan pesananMakanan);
 
     public double getDiskon() {
         return diskon;

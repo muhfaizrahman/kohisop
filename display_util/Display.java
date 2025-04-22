@@ -29,7 +29,7 @@ public class Display {
 
             for (ItemPesanan item : rincian) {
                 String kode = item.getKode();
-                int[] jumlahlItem = PesananMinuman.getPesanan();
+                int[] jumlahlItem = PesananMinuman.getQTYPesanan();
 
                 for (int i = 0; i < daftar.length; i++) {
                     if (daftar[i].getKode().equals(kode)) {
@@ -51,7 +51,7 @@ public class Display {
 
             for (ItemPesanan item : rincian) {
                 String kode = item.getKode();
-                int[] jumlahlItem = PesananMakanan.getPesanan();
+                int[] jumlahlItem = PesananMakanan.getQTYPesanan();
                 
                 for (int i = 0; i < daftar.length; i++) {
                     if (daftar[i].getKode().equals(kode)) {
@@ -126,7 +126,7 @@ public class Display {
 
     public static void displayPesanan() {
         
-        int[] makananPesanan = PesananMakanan.getPesanan();
+        int[] makananPesanan = PesananMakanan.getQTYPesanan();
         Makanan[] daftarMakanan = Makanan.getDaftarMakanan();
 
         boolean adaMakanan = false;
@@ -152,7 +152,7 @@ public class Display {
         System.out.println("|-------|------------------------------------------|------------|");
 
 
-        int[] minumanPesanan = PesananMinuman.getPesanan();
+        int[] minumanPesanan = PesananMinuman.getQTYPesanan();
         Minuman[] daftarMinuman = Minuman.getDaftarMinuman();
 
         boolean adaMinuman = false;
