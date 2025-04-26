@@ -24,16 +24,16 @@ public class PembayaranVirtual extends Pembayaran {
         double hargaSebelumDiskon = Perhitungan.hitungTagihanTotal(pesananMinuman, pesananMakanan);
         double totalHargaIDR = (hargaSebelumDiskon * (1 - diskon)) + biayaAdmin + Perhitungan.getPajakTagihan(pesananMinuman, pesananMakanan);
         double totalHarga = mataUang.konversiDariIDR(totalHargaIDR);
-        String namaClass = mataUang.getClass().getSimpleName();
+        String namaClassMataUang = mataUang.getClass().getSimpleName();
         
         // Bayar
         while (true) {
-            System.out.printf("Total tagihan adalah : %.2f %s\n", totalHarga, namaClass);
+            System.out.printf("Total tagihan adalah : %.2f %s\n", totalHarga, namaClassMataUang);
             
             if (saldo.getSaldo() >= totalHargaIDR) {
                 saldo.setSaldo(-totalHargaIDR);
                 System.out.println("Pembayaran dengan " + this.getClass().getSimpleName() + " berhasil.");
-                System.out.printf("Saldo anda sekarang adalah : %.2f IDR // %.2f %s\n", saldo.getSaldo(), mataUang.konversiDariIDR(saldo.getSaldo()), namaClass);
+                System.out.printf("Saldo anda sekarang adalah : %.2f IDR // %.2f %s\n", saldo.getSaldo(), mataUang.konversiDariIDR(saldo.getSaldo()), namaClassMataUang);
                 System.out.println("Berikut adalah kuitansinya: ");
                 break;
             } else {
@@ -41,7 +41,7 @@ public class PembayaranVirtual extends Pembayaran {
                 System.out.println("Masukkan nominal untuk top up saldo: ");
                 saldo.setSaldo(input.nextDouble());
                 System.out.println("Top up saldo berhasil.");
-                System.out.printf("Saldo anda sekarang adalah : %.2f IDR // %.2f %s\n", saldo.getSaldo(), mataUang.konversiDariIDR(saldo.getSaldo()), namaClass);
+                System.out.printf("Saldo anda sekarang adalah : %.2f IDR // %.2f %s\n", saldo.getSaldo(), mataUang.konversiDariIDR(saldo.getSaldo()), namaClassMataUang);
                 continue;
             }
         }
