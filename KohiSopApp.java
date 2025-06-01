@@ -10,12 +10,14 @@ import mata_uang.JPY;
 import mata_uang.MYR;
 import mata_uang.MataUang;
 import mata_uang.USD;
+import membership.Member;
+import membership.MemberService;
 import menu.*;
 import pemesanan.*;
 
 public class KohiSopApp {
-    private static final PesananMakanan pesananMakanan = new PesananMakanan();
-    private static final PesananMinuman pesananMinuman = new PesananMinuman();
+    private static PesananMakanan pesananMakanan = new PesananMakanan();
+    private static PesananMinuman pesananMinuman = new PesananMinuman();
 
     public static MenuPesanan getHandlerPesanan(String kode) {
         if (Makanan.getMakananByKode(kode) != null) {
@@ -30,23 +32,22 @@ public class KohiSopApp {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
+        System.out.println("Selamat datang di KohiSop! Silakan input nama anda: ");
+        String namaPelanggan = input.nextLine();
+
+        MemberService.daftarMemberBaru(namaPelanggan);
+
         // Inisialisasi menu makanan dan minuman
         Makanan.makananInitialization();
         Minuman.minumanInitialization();
 
         Display.displayMenu();
-        
+
         // Memilih menu makanan / minuman
         while (true) {
             System.out.println("Ketik \"YES\" untuk menyeselaikan pesanan. Ketik \"CC\" untuk membatalkan pesanan.");
-            System.out.println("Masukkan kode pemesanan: ");
+            System.out.print("Masukkan kode pemesanan: ");
             String kode = input.next().toUpperCase();
-            
-            // Case user "CC"
-            if (kode.equals("CC")) {
-                System.out.println("Pesanan dibatalkan oleh user. Program berhenti.");
-                System.exit(0);
-            }
             
             // Case user "yes"
             if (kode.equals("YES")) {

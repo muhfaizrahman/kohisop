@@ -1,5 +1,6 @@
 package display_util;
 
+import java.util.Comparator;
 import java.util.List;
 
 import channel_pembayaran.Pembayaran;
@@ -111,41 +112,45 @@ public class Display {
     }
 
     public static void displayPesanan() {
-        List<ItemPesanan> rincianMakanan = PesananMakanan.getRincianPesanan();
+        List<ItemPesanan> rincianMakanan = PesananMakanan.getJumlahPesanan();
+        List<ItemPesanan> rincianMinuman = PesananMinuman.getJumlahPesanan();
+
+        rincianMakanan.sort(Comparator.comparingInt(ItemPesanan::getHarga));
+        rincianMinuman.sort(Comparator.comparingInt(ItemPesanan::getHarga));
+
+        System.out.println("|-------|------------------------------------------|------------|------------|");
+        System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Makanan", "Harga", "Kuantitas");
+        System.out.println("|-------|------------------------------------------|------------|------------|");
 
         if (rincianMakanan.isEmpty()) {
-            System.out.println("|                       Tidak ada pesanan makanan.                      |");
+            System.out.println("|                          Tidak ada pesanan makanan.                        |");
         } else {
-            System.out.println("|-------|------------------------------------------|------------|------------|");
-            System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Makanan", "Harga", "Kuantitas");
-            System.out.println("|-------|------------------------------------------|------------|------------|");
-
             for (ItemPesanan item : rincianMakanan) {
-                Makanan m = Makanan.getMakananByKode(item.getKode());
-                if (m != null) {
-                    System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
-                        item.getKode(), m.getNama(), m.getHarga(), item.getQty());
-                }
+                System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
+                    item.getKode(), 
+                    item.getNama(), 
+                    item.getHarga(), 
+                    item.getQty()
+                );
             }
 
             System.out.println("|-------|------------------------------------------|------------|------------|");
         }
 
-        List<ItemPesanan> rincianMinuman = PesananMinuman.getRincianPesanan();
+        System.out.println("|-------|------------------------------------------|------------|------------|");
+        System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Minuman", "Harga", "Kuantitas");
+        System.out.println("|-------|------------------------------------------|------------|------------|");
 
         if (rincianMinuman.isEmpty()) {
-            System.out.println("|                       Tidak ada pesanan minuman.                      |");
+            System.out.println("|                          Tidak ada pesanan minuman.                        |");
         } else {
-            System.out.println("|-------|------------------------------------------|------------|------------|");
-            System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Minuman", "Harga", "Kuantitas");
-            System.out.println("|-------|------------------------------------------|------------|------------|");
-
             for (ItemPesanan item : rincianMinuman) {
-                Minuman m = Minuman.getMinumanByKode(item.getKode());
-                if (m != null) {
-                    System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
-                        item.getKode(), m.getNama(), m.getHarga(), item.getQty());
-                }
+                System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
+                    item.getKode(), 
+                    item.getNama(), 
+                    item.getHarga(), 
+                    item.getQty()
+                );
             }
 
             System.out.println("|-------|------------------------------------------|------------|------------|");

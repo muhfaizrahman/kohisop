@@ -26,4 +26,5 @@ public abstract class Menu {
     public int getHarga() {
         return harga;
     }   
+
 }

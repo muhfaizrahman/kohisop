@@ -5,33 +5,30 @@ import java.util.List;
 
 public class Minuman extends Menu {
 
-    // Data menu
-    private static final List<String> kodeMinuman = List.of("A1","A2","E1","E2","E3","E4","E5","B1","B2","B3");
-    private static final List<String> namaMinuman = List.of(
-        "Caffe Latte", "Cappuccino", "Caffe Americano", 
-        "Caffe Mocha", "Caramel Macchiato", "Asian Dolce Latte", 
-        "Double Shots Iced Shaken Espresso", "Freshly Brewed Coffee", "Vanilla Sweet Cream Cold Brew", 
-        "Cold Brew"
-    );
-    private static final List<Integer> hargaMinuman = List.of(46, 46, 37, 55, 59, 55, 50, 23, 50, 44);
-
-    private static final List<Minuman> daftarMinuman = new ArrayList<>();
-    
     // Konstruktor
     Minuman(String kode, String nama, int harga) {
         super(kode, nama, harga);
     }
 
-    // Getter untuk daftar minuman
-    public static List<Minuman> getDaftarMinuman() {
-        return daftarMinuman;
-    }
+    private static List<Minuman> daftarMinuman = new ArrayList<>();
 
     // Inisialisasi minuman dari daftar
     public static void minumanInitialization() {
-        for (int i = 0; i < kodeMinuman.size(); i++) {
-            daftarMinuman.add(new Minuman(kodeMinuman.get(i), namaMinuman.get(i), hargaMinuman.get(i)));
-        }
+        daftarMinuman.add(new Minuman("A1", "Caffe Latte", 46));
+        daftarMinuman.add(new Minuman("A2", "Cappuccino", 46));
+        daftarMinuman.add(new Minuman("E1", "Caffe Americano", 37));
+        daftarMinuman.add(new Minuman("E2", "Caffe Mocha", 55));
+        daftarMinuman.add(new Minuman("E3", "Caramel Macchiato", 59));
+        daftarMinuman.add(new Minuman("E4", "Asian Dolce Latte", 55));
+        daftarMinuman.add(new Minuman("E5", "Double Shots Iced Shaken Espresso", 50));
+        daftarMinuman.add(new Minuman("B1", "Freshly Brewed Coffee", 23));
+        daftarMinuman.add(new Minuman("B2", "Vanilla Sweet Cream Cold Brew", 50));
+        daftarMinuman.add(new Minuman("B3", "Cold Brew", 44));
+    }
+
+    // Getter untuk daftar minuman
+    public static List<Minuman> getDaftarMinuman() {
+        return daftarMinuman;
     }
 
     public static Minuman getMinumanByKode(String kode) {
@@ -40,7 +37,7 @@ public class Minuman extends Menu {
                 return minuman;
             }
         }
-        return null; // kalau gak ketemu
+        return null;
     }
     
 }

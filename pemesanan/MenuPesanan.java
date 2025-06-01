@@ -7,13 +7,13 @@ import menu.*;
 
 public abstract class MenuPesanan {
 
-    protected static List<ItemPesanan> pesananList;
+    protected List<ItemPesanan> pesananList;
     protected int maxJenis;
     protected int maxKuantitas;
     protected String kategori;
 
-    public MenuPesanan(int maxJenis, int maxKuantitas, String kategori) {
-        this.pesananList = new ArrayList<>();
+    public MenuPesanan(List<ItemPesanan> pesananList, int maxJenis, int maxKuantitas, String kategori) {
+        this.pesananList = pesananList;
         this.maxJenis = maxJenis;
         this.maxKuantitas = maxKuantitas;
         this.kategori = kategori;
@@ -25,16 +25,19 @@ public abstract class MenuPesanan {
         return kategori;
     }
 
-    // Method ini menambahkan atau meng‐update ItemPesanan dalam ArrayList
+    public List<ItemPesanan> getRincianPesanan() {
+        return pesananList;
+    };
+
     public void pesan(String kode) {
         Scanner input = new Scanner(System.in);
         List<? extends Menu> daftarMenu = getDaftarMenu();
 
         // Cari objek Menu berdasarkan kode
         Menu target = null;
-        for (Menu m : daftarMenu) {
-            if (m.getKode().equalsIgnoreCase(kode)) {
-                target = m;
+        for (Menu menu : daftarMenu) {
+            if (menu.getKode().equalsIgnoreCase(kode)) {
+                target = menu;
                 break;
             }
         }
@@ -64,8 +67,11 @@ public abstract class MenuPesanan {
             "Enter = 1 porsi.\n" +
             "Masukkan jumlah porsi (max " + maxKuantitas + "): "
         );
+        
+        // Memasukkan jumlah porsi
         String qty = input.nextLine().trim().toUpperCase();
 
+        // Kondisi ketika memasukkan jumlah porsi
         if (qty.equals("CC")) {
             System.out.println("Pesanan dibatalkan. Program berhenti.");
             System.exit(0);
@@ -78,6 +84,7 @@ public abstract class MenuPesanan {
             return;
         }
 
+        // Parsing ke Integer
         int jumlah;
         try {
             jumlah = Integer.parseInt(qty);
@@ -85,27 +92,23 @@ public abstract class MenuPesanan {
             System.out.println("Error: Input harus angka.");
             return;
         }
+
         if (jumlah < 0 || jumlah > maxKuantitas) {
             System.out.println("Error: Kuantitas tidak valid.");
             return;
         }
 
         if (existing != null) {
-            if (existing.getQty() + jumlah >= maxKuantitas) {
+            if (existing.getQty() + jumlah > maxKuantitas) {
                 System.out.println("Maksimal jumlah porsi untuk " + kategori + " adalah " + maxKuantitas);
                 return;
             }
             existing.setQty(existing.getQty() + jumlah);
             System.out.println(target.getNama() + " ditambahkan sebanyak " + jumlah + " porsi. (Total: " + existing.getQty() + ")");
         } else {
-            // Tambah item baru
-            pesananList.add(new ItemPesanan(target.getKode(), jumlah));
+            pesananList.add(new ItemPesanan(target.getKode(), target.getNama(), target.getHarga(), jumlah));
             System.out.println(target.getNama() + " ditambahkan sebanyak " + jumlah + " porsi.");
         }
     }
 
-    // Cukup kembalikan list pesanan yang sudah berisi ItemPesanan
-    public static List<ItemPesanan> getRincianPesanan() {
-        return pesananList;
-    }
 }
