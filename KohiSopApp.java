@@ -14,16 +14,25 @@ import menu.*;
 import pemesanan.*;
 
 public class KohiSopApp {
+    private static final PesananMakanan pesananMakanan = new PesananMakanan();
+    private static final PesananMinuman pesananMinuman = new PesananMinuman();
+
+    public static MenuPesanan getHandlerPesanan(String kode) {
+        if (Makanan.getMakananByKode(kode) != null) {
+            return pesananMakanan;
+        } else if (Minuman.getMinumanByKode(kode) != null) {
+            return pesananMinuman;
+        } else {
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
 
         // Inisialisasi menu makanan dan minuman
         Makanan.makananInitialization();
         Minuman.minumanInitialization();
-
-        // Pesanan pesanan = new Pesanan();
-        PesananMakanan pesananMakanan = new PesananMakanan();
-        PesananMinuman pesananMinuman = new PesananMinuman();
 
         Display.displayMenu();
         
@@ -44,13 +53,13 @@ public class KohiSopApp {
                 break;
             }
             
-            if (PesananMakanan.kodeAdaDiMakanan(kode)) {
-                pesananMakanan.pesan(kode);
-            } else if (PesananMinuman.kodeAdaDiMinuman(kode)) {
-                pesananMinuman.pesan(kode);
+            MenuPesanan pesananHandler = getHandlerPesanan(kode);
+            if (pesananHandler != null) {
+                pesananHandler.pesan(kode);
             } else {
                 System.out.println("Error: Kode tidak ditemukan. Coba lagi.");
             }
+
             Display.displayPesanan();
         }
 

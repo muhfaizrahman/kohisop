@@ -2,18 +2,23 @@ package pemesanan;
 
 public class ItemPesanan {
         private String kode;
-        private int jumlah;
+        private int qty;
     
-        public ItemPesanan(String kode, int jumlah) {
+        public ItemPesanan(String kode, int qty) {
             this.kode = kode;
-            this.jumlah = jumlah;
+            this.qty = qty;
         }
     
         public String getKode() {
             return kode;
         }
     
-        public int getJumlah() {
-            return jumlah;
+        public int getQty() {
+            return qty;
         }
+
+        public void setQty(int qty) {
+            this.qty = qty;
+        }
+
 }

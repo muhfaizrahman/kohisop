@@ -5,12 +5,14 @@ public abstract class Menu {
     protected String nama;
     protected int harga;
 
-    abstract void display();
-
     Menu(String kode, String nama, int harga) {
         this.kode = kode;
         this.nama = nama;
         this.harga = harga;
+    }
+
+    public void display() {
+        System.out.printf("| %-5s | %-40s | %-10d |\n", kode, nama, harga);
     }
 
     public String getKode() {
