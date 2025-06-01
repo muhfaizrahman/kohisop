@@ -1,10 +1,12 @@
 package display_util;
 
+import java.util.Comparator;
+import java.util.List;
+
 import channel_pembayaran.Pembayaran;
 import mata_uang.IMataUang;
 import mata_uang.MataUang;
 import menu.Makanan;
-import menu.Menu;
 import menu.Minuman;
 import pemesanan.PesananMakanan;
 import pemesanan.PesananMinuman;
@@ -19,56 +21,41 @@ public class Display {
         System.out.printf("| %50s%s%51s |\n", "", "Kategori " + pesanan.getKategori(), "");
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
         System.out.printf("| %-5s | %-40s | %-10s | %-10s | %-12s | %-10s | %-12s |\n",
-        "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak (%)", "Pajak (IDR)");
+            "Kode", "Nama Menu", "Harga", "Jumlah", "Total Harga", "Pajak (%)", "Pajak (IDR)");
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n",
-        "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
+            "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
 
-        if (pesanan instanceof PesananMinuman) {
-            ItemPesanan[] rincian = pesanan.getRincianPesanan();
-            Menu[] daftar = pesanan.getDaftarMenu();
+        for (ItemPesanan item : pesanan.getRincianPesanan()) {
+            String kode = item.getKode();
+            int qty = item.getQty();
+            String nama = "";
+            int harga = 0;
 
-            for (ItemPesanan item : rincian) {
-                String kode = item.getKode();
-                int[] jumlahlItem = PesananMinuman.getQTYPesanan();
-
-                for (int i = 0; i < daftar.length; i++) {
-                    if (daftar[i].getKode().equals(kode)) {
-                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-9.2f%% | %-12.2f |\n",
-                            daftar[i].getKode(),
-                            daftar[i].getNama(),
-                            daftar[i].getHarga(),
-                            jumlahlItem[i],
-                            Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPersentasePajak(pesanan, kode) * 100,
-                            Perhitungan.getBesarPajakIDR(pesanan, kode)
-                        );
-                    }
+            // Ambil detail menu dari kode
+            if (pesanan instanceof PesananMakanan) {
+                Makanan makanan = Makanan.getMakananByKode(kode);
+                if (makanan != null) {
+                    nama = makanan.getNama();
+                    harga = makanan.getHarga();
                 }
-            }   
-        } else if (pesanan instanceof PesananMakanan) {
-            ItemPesanan[] rincian =  pesanan.getRincianPesanan();
-            Menu[] daftar =  pesanan.getDaftarMenu();
-
-            for (ItemPesanan item : rincian) {
-                String kode = item.getKode();
-                int[] jumlahlItem = PesananMakanan.getQTYPesanan();
-                
-                for (int i = 0; i < daftar.length; i++) {
-                    if (daftar[i].getKode().equals(kode)) {
-                        System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-9.2f%% | %-12.2f |\n",
-                            daftar[i].getKode(),
-                            daftar[i].getNama(),
-                            daftar[i].getHarga(),
-                            jumlahlItem[i],
-                            Perhitungan.hitungTotalPerMenu(pesanan, kode),
-                            Perhitungan.getPersentasePajak(pesanan, kode) * 100,
-                            Perhitungan.getBesarPajakIDR(pesanan, kode)
-                        );
-                    }
+            } else if (pesanan instanceof PesananMinuman) {
+                Minuman minuman = Minuman.getMinumanByKode(kode);
+                if (minuman != null) {
+                    nama = minuman.getNama();
+                    harga = minuman.getHarga();
                 }
-            }   
+            }
+
+            double total = Perhitungan.hitungTotalPerMenu(pesanan, kode);
+            double pajakPersen = Perhitungan.getPersentasePajak(pesanan, kode) * 100;
+            double pajakIDR = Perhitungan.getBesarPajakIDR(pesanan, kode);
+
+            System.out.printf("| %-5s | %-40s | %-10d | %-10d | %-12.2f | %-9.2f%% | %-12.2f |\n",
+                kode, nama, harga, qty, total, pajakPersen, pajakIDR);
         }
-        System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n", "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
+
+        System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n",
+            "-------", "------------------------------------------", "------------", "------------", "--------------", "------------", "--------------");
         System.out.printf("| Total harga %s di luar pajak: %-83.2f|\n", pesanan.getKategori(), Perhitungan.hitungTagihanKategori(pesanan));
         System.out.printf("| Total harga %s termasuk pajak: %-82.2f|\n", pesanan.getKategori(), Perhitungan.hitungTagihanKategori(pesanan) + Perhitungan.getPajakKategori(pesanan));
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
@@ -125,56 +112,49 @@ public class Display {
     }
 
     public static void displayPesanan() {
-        
-        int[] makananPesanan = PesananMakanan.getQTYPesanan();
-        Makanan[] daftarMakanan = Makanan.getDaftarMakanan();
+        List<ItemPesanan> rincianMakanan = PesananMakanan.getJumlahPesanan();
+        List<ItemPesanan> rincianMinuman = PesananMinuman.getJumlahPesanan();
 
-        boolean adaMakanan = false;
-        System.out.println("|-------|------------------------------------------|------------|");
-        System.out.printf("| %-5s | %-40s | %-10s |\n", "Kode", "Makanan", "Kuantitas");
-        System.out.println("|-------|------------------------------------------|------------|");
+        rincianMakanan.sort(Comparator.comparingInt(ItemPesanan::getHarga));
+        rincianMinuman.sort(Comparator.comparingInt(ItemPesanan::getHarga));
 
-        for (int i = 0; i < makananPesanan.length; i++) {
-            if (makananPesanan[i] > 0) {
-                adaMakanan = true;
-                System.out.printf("| %-5s | %-40s | %-10d |\n",
-                    daftarMakanan[i].getKode(),
-                    daftarMakanan[i].getNama(),
-                    makananPesanan[i]
+        System.out.println("|-------|------------------------------------------|------------|------------|");
+        System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Makanan", "Harga", "Kuantitas");
+        System.out.println("|-------|------------------------------------------|------------|------------|");
+
+        if (rincianMakanan.isEmpty()) {
+            System.out.println("|                          Tidak ada pesanan makanan.                        |");
+        } else {
+            for (ItemPesanan item : rincianMakanan) {
+                System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
+                    item.getKode(), 
+                    item.getNama(), 
+                    item.getHarga(), 
+                    item.getQty()
                 );
             }
+
+            System.out.println("|-------|------------------------------------------|------------|------------|");
         }
 
-        if (!adaMakanan) {
-            System.out.println("|                   Tidak ada pesanan makanan.                  |");
-        }
+        System.out.println("|-------|------------------------------------------|------------|------------|");
+        System.out.printf("| %-5s | %-40s | %-10s | %-10s |\n", "Kode", "Minuman", "Harga", "Kuantitas");
+        System.out.println("|-------|------------------------------------------|------------|------------|");
 
-        System.out.println("|-------|------------------------------------------|------------|");
-
-
-        int[] minumanPesanan = PesananMinuman.getQTYPesanan();
-        Minuman[] daftarMinuman = Minuman.getDaftarMinuman();
-
-        boolean adaMinuman = false;
-        System.out.println("|-------|------------------------------------------|------------|");
-        System.out.printf("| %-5s | %-40s | %-10s |\n", "Kode", "Minuman", "Kuantitas");
-        System.out.println("|-------|------------------------------------------|------------|");
-
-        for (int i = 0; i < daftarMinuman.length; i++) {
-            if (minumanPesanan[i] > 0) {
-                adaMinuman = true;
-                System.out.printf("| %-5s | %-40s | %-10d |\n",
-                    daftarMinuman[i].getKode(),
-                    daftarMinuman[i].getNama(),
-                    minumanPesanan[i]
+        if (rincianMinuman.isEmpty()) {
+            System.out.println("|                          Tidak ada pesanan minuman.                        |");
+        } else {
+            for (ItemPesanan item : rincianMinuman) {
+                System.out.printf("| %-5s | %-40s | %-10d | %-10d |\n",
+                    item.getKode(), 
+                    item.getNama(), 
+                    item.getHarga(), 
+                    item.getQty()
                 );
             }
-        }
 
-        if (!adaMinuman) {
-            System.out.println("|                   Tidak ada pesanan minuman.                  |");
+            System.out.println("|-------|------------------------------------------|------------|------------|");
         }
-
-        System.out.println("|-------|------------------------------------------|------------|");
     }
+
 }

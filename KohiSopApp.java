@@ -10,47 +10,57 @@ import mata_uang.JPY;
 import mata_uang.MYR;
 import mata_uang.MataUang;
 import mata_uang.USD;
+import membership.Member;
+import membership.MemberService;
 import menu.*;
 import pemesanan.*;
 
 public class KohiSopApp {
+    private static PesananMakanan pesananMakanan = new PesananMakanan();
+    private static PesananMinuman pesananMinuman = new PesananMinuman();
+
+    public static MenuPesanan getHandlerPesanan(String kode) {
+        if (Makanan.getMakananByKode(kode) != null) {
+            return pesananMakanan;
+        } else if (Minuman.getMinumanByKode(kode) != null) {
+            return pesananMinuman;
+        } else {
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
+
+        System.out.println("Selamat datang di KohiSop! Silakan input nama anda: ");
+        String namaPelanggan = input.nextLine();
+
+        MemberService.daftarMemberBaru(namaPelanggan);
 
         // Inisialisasi menu makanan dan minuman
         Makanan.makananInitialization();
         Minuman.minumanInitialization();
 
-        // Pesanan pesanan = new Pesanan();
-        PesananMakanan pesananMakanan = new PesananMakanan();
-        PesananMinuman pesananMinuman = new PesananMinuman();
-
         Display.displayMenu();
-        
+
         // Memilih menu makanan / minuman
         while (true) {
             System.out.println("Ketik \"YES\" untuk menyeselaikan pesanan. Ketik \"CC\" untuk membatalkan pesanan.");
-            System.out.println("Masukkan kode pemesanan: ");
+            System.out.print("Masukkan kode pemesanan: ");
             String kode = input.next().toUpperCase();
-            
-            // Case user "CC"
-            if (kode.equals("CC")) {
-                System.out.println("Pesanan dibatalkan oleh user. Program berhenti.");
-                System.exit(0);
-            }
             
             // Case user "yes"
             if (kode.equals("YES")) {
                 break;
             }
             
-            if (PesananMakanan.kodeAdaDiMakanan(kode)) {
-                pesananMakanan.pesan(kode);
-            } else if (PesananMinuman.kodeAdaDiMinuman(kode)) {
-                pesananMinuman.pesan(kode);
+            MenuPesanan pesananHandler = getHandlerPesanan(kode);
+            if (pesananHandler != null) {
+                pesananHandler.pesan(kode);
             } else {
                 System.out.println("Error: Kode tidak ditemukan. Coba lagi.");
             }
+
             Display.displayPesanan();
         }
 

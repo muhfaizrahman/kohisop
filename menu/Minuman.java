@@ -1,33 +1,43 @@
 package menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Minuman extends Menu {
 
-    // Data menu
-    private static String[] kodeMinuman = {"A1","A2","E1","E2","E3","E4","E5","B1","B2","B3"};
-    private static String[] menuMinuman = {"Caffe Latte", "Cappuccino", "Caffe Americano", "Caffe Mocha", "Caramel Macchiato", "Asian Dolce Latte", "Double Shots Iced Shaken Espresso", "Freshly Brewed Coffee", "Vanilla Sweet Cream Cold Brew", "Cold Brew"};
-    private static int[] hargaMinuman = {46, 46, 37, 55, 59, 55, 50, 23, 50, 44};
-
-    // Array buat nampung banyaknya minuman
-    private static Minuman[] daftarMinuman = new Minuman[kodeMinuman.length];
-    
+    // Konstruktor
     Minuman(String kode, String nama, int harga) {
         super(kode, nama, harga);
     }
-    
-    @Override
-    public void display() {
-        System.out.printf("| %-5s | %-40s | %-10d |\n", kode, nama, harga);
+
+    private static List<Minuman> daftarMinuman = new ArrayList<>();
+
+    // Inisialisasi minuman dari daftar
+    public static void minumanInitialization() {
+        daftarMinuman.add(new Minuman("A1", "Caffe Latte", 46));
+        daftarMinuman.add(new Minuman("A2", "Cappuccino", 46));
+        daftarMinuman.add(new Minuman("E1", "Caffe Americano", 37));
+        daftarMinuman.add(new Minuman("E2", "Caffe Mocha", 55));
+        daftarMinuman.add(new Minuman("E3", "Caramel Macchiato", 59));
+        daftarMinuman.add(new Minuman("E4", "Asian Dolce Latte", 55));
+        daftarMinuman.add(new Minuman("E5", "Double Shots Iced Shaken Espresso", 50));
+        daftarMinuman.add(new Minuman("B1", "Freshly Brewed Coffee", 23));
+        daftarMinuman.add(new Minuman("B2", "Vanilla Sweet Cream Cold Brew", 50));
+        daftarMinuman.add(new Minuman("B3", "Cold Brew", 44));
     }
-    
-    // Method buat ambil array banyaknya minuman dalam daftar menu
-    public static Minuman[] getDaftarMinuman() {
+
+    // Getter untuk daftar minuman
+    public static List<Minuman> getDaftarMinuman() {
         return daftarMinuman;
     }
 
-    public static void minumanInitialization() {
-        for (int i = 0; i < kodeMinuman.length; i++) {
-            daftarMinuman[i] = new Minuman(kodeMinuman[i], menuMinuman[i], hargaMinuman[i]);
+    public static Minuman getMinumanByKode(String kode) {
+        for (Minuman minuman : Minuman.getDaftarMinuman()) {
+            if (minuman != null && minuman.getKode().equals(kode)) {
+                return minuman;
+            }
         }
+        return null;
     }
     
 }
