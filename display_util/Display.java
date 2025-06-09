@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import channel_pembayaran.Pembayaran;
-import mata_uang.IMataUang;
 import mata_uang.MataUang;
 import menu.Makanan;
 import menu.Minuman;
@@ -13,6 +12,7 @@ import pemesanan.PesananMinuman;
 import perhitungan.Perhitungan;
 import pemesanan.ItemPesanan;
 import pemesanan.MenuPesanan;
+import membership.*;
 
 public class Display {
 
@@ -61,11 +61,18 @@ public class Display {
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
     }
 
-    public static void displayKuitansi(Pembayaran pembayaran, PesananMinuman pesananMinuman, PesananMakanan pesananMakanan) {
+    public static void displayKuitansi(Pembayaran pembayaran, PesananMinuman pesananMinuman, PesananMakanan pesananMakanan, Member member) {
+
+        System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("| %40s%s%39s |\n", "","Kuitansi Pembayaran Kohisop Restaurant", "");
+        System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
+        System.out.printf("| %-20s: %10s %84s |\n", "Nama Customer", member.getNama(), "");
+        System.out.printf("| %-20s: %10s %84s |\n", "Kode Member", member.getKode(), "");
+
         displayKategori(pesananMakanan);
         displayKategori(pesananMinuman);
-
-        IMataUang mataUang = MataUang.getMataUang();
+        
+        MataUang mataUang = MataUang.getMataUang();
         String mataUangString = mataUang.getClass().getSimpleName();
         double totalPajakIDR = Perhitungan.getPajakTagihan(pesananMinuman, pesananMakanan);
         double totalPajak = mataUang.konversiDariIDR(totalPajakIDR);
@@ -78,6 +85,20 @@ public class Display {
 
         // Total tagihan dengan mata uang pembayaran
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
+
+        if (member != null) {
+            System.out.printf("| %-50s: %10d %54s |\n", "Poin sebelum transaksi", member.getPoin(), "");
+            if (mataUang instanceof mata_uang.IDR) {
+                double poinPakai = MemberService.hitungPoinPakai(totalHargaIDR, member);
+                if (poinPakai > totalHargaIDR) 
+                    member.tambahPoin(-(int) (poinPakai / 2)); // Deduct points used
+            }
+            
+            // Add points for member
+            double poinDapat = MemberService.hitungPoinDapat(totalHargaIDR, member);
+            member.tambahPoin((int) poinDapat);
+            System.out.printf("| %-50s: %10d %54s |\n", "Poin setelah transaksi", member.getPoin(), "");
+        }
         
         System.out.printf("| %-50s: %10.2f%% %54s|\n", "Diskon channel pembayaran " + pembayaran.getClass().getSimpleName(), pembayaran.getDiskon() * 100, "");
 
@@ -92,10 +113,10 @@ public class Display {
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
         System.out.printf("| %39s%s%38s |\n", "","Terima kasih dan silakan datang kembali.", "");
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
+        
     }
 
     public static void displayMenu() {
-        
         System.out.println("|-------|------------------------------------------|------------|");
         System.out.printf("| %-5s | %-40s | %-10s |\n", "Kode", "Menu Minuman", "Harga (Rp)");
         System.out.println("|-------|------------------------------------------|------------|");
@@ -111,9 +132,9 @@ public class Display {
         System.out.println("|-------|------------------------------------------|------------|");
     }
 
-    public static void displayPesanan() {
-        List<ItemPesanan> rincianMakanan = PesananMakanan.getJumlahPesanan();
-        List<ItemPesanan> rincianMinuman = PesananMinuman.getJumlahPesanan();
+    public static void displayPesanan(PesananMakanan pesananMakanan, PesananMinuman pesananMinuman) {
+        List<ItemPesanan> rincianMakanan = pesananMakanan.getRincianPesanan();
+        List<ItemPesanan> rincianMinuman = pesananMinuman.getRincianPesanan();
 
         rincianMakanan.sort(Comparator.comparingInt(ItemPesanan::getHarga));
         rincianMinuman.sort(Comparator.comparingInt(ItemPesanan::getHarga));

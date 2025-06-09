@@ -10,117 +10,148 @@ import mata_uang.JPY;
 import mata_uang.MYR;
 import mata_uang.MataUang;
 import mata_uang.USD;
+import mata_uang.IDR;
 import membership.Member;
 import membership.MemberService;
 import menu.*;
 import pemesanan.*;
+import tim_dapur.*;
+import perhitungan.Perhitungan;
 
 public class KohiSopApp {
-    private static PesananMakanan pesananMakanan = new PesananMakanan();
-    private static PesananMinuman pesananMinuman = new PesananMinuman();
-
-    public static MenuPesanan getHandlerPesanan(String kode) {
-        if (Makanan.getMakananByKode(kode) != null) {
-            return pesananMakanan;
-        } else if (Minuman.getMinumanByKode(kode) != null) {
-            return pesananMinuman;
-        } else {
-            return null;
-        }
-    }
+    private static TimDapur timDapur = new TimDapur();
+    private static Member memberAktif = null;
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-
-        System.out.println("Selamat datang di KohiSop! Silakan input nama anda: ");
-        String namaPelanggan = input.nextLine();
-
-        MemberService.daftarMemberBaru(namaPelanggan);
+        int jumlahPelanggan = 0;
 
         // Inisialisasi menu makanan dan minuman
         Makanan.makananInitialization();
         Minuman.minumanInitialization();
 
-        Display.displayMenu();
-
-        // Memilih menu makanan / minuman
-        while (true) {
-            System.out.println("Ketik \"YES\" untuk menyeselaikan pesanan. Ketik \"CC\" untuk membatalkan pesanan.");
-            System.out.print("Masukkan kode pemesanan: ");
-            String kode = input.next().toUpperCase();
+        while (jumlahPelanggan < 3) {
+            // reset order untuk customer baru
+            PesananMakanan pesananMakanan = new PesananMakanan();
+            PesananMinuman pesananMinuman = new PesananMinuman();
             
-            // Case user "yes"
-            if (kode.equals("YES")) {
-                break;
-            }
+            System.out.println("Selamat datang di KohiSop! Silakan input nama anda: ");
+            String namaPelanggan = input.nextLine();
+
+            if (MemberService.cariMemberByNama(namaPelanggan) == null) {
+                MemberService.daftarMemberBaru(namaPelanggan);
+            } 
             
-            MenuPesanan pesananHandler = getHandlerPesanan(kode);
-            if (pesananHandler != null) {
-                pesananHandler.pesan(kode);
-            } else {
-                System.out.println("Error: Kode tidak ditemukan. Coba lagi.");
+            memberAktif = MemberService.cariMemberByNama(namaPelanggan);
+            System.out.println("Poin member saat ini: " + memberAktif.getPoin());
+            
+            // Set member state sekarang (current)
+            Perhitungan.setMemberAktif(memberAktif);
+
+            jumlahPelanggan++;
+
+            Display.displayMenu();
+
+            boolean lanjutPesanan = true;
+
+            // Memilih menu makanan / minuman
+            while (lanjutPesanan) {
+                System.out.println("Ketik \"YES\" untuk menyelesaikan pesanan. Ketik \"CC\" untuk membatalkan pesanan.");
+                System.out.print("Masukkan kode pemesanan: ");
+                String kode = input.next().toUpperCase();
+                
+                if (kode.equals("CC")) {
+                    System.exit(0);
+                }
+                
+                if (kode.equals("YES")) {
+                    break;
+                }
+                
+                Menu menu = Menu.getMenuByKode(kode);
+                if (menu != null) {
+                    if (menu instanceof Makanan) {
+                        pesananMakanan.pesan(kode);
+                        timDapur.tambahkanMakanan((Makanan) menu, memberAktif);
+                    } else if (menu instanceof Minuman) {
+                        pesananMinuman.pesan(kode);
+                        timDapur.tambahkanMinuman((Minuman) menu, memberAktif);
+                    }
+                } else {
+                    System.out.println("Error: Kode tidak ditemukan. Coba lagi.");
+                }
+
+                Display.displayPesanan(pesananMakanan, pesananMinuman);
             }
 
-            Display.displayPesanan();
+            // Memilih mata uang
+            boolean valid = false;
+            while (!valid) {
+                System.out.println("Pilih mata uang pembayaran: \nIDR\nUSD\nEUR\nMYR\nJPY");
+                String pilih = input.next().toUpperCase();
+                
+                switch (pilih) {
+                    case "IDR": 
+                        MataUang.setMataUang(new IDR()); 
+                        valid = true;
+                        break;
+                    case "USD": 
+                        MataUang.setMataUang(new USD()); 
+                        valid = true;
+                        break;
+                    case "EUR": 
+                        MataUang.setMataUang(new EUR()); 
+                        valid = true;
+                        break;
+                    case "MYR": 
+                        MataUang.setMataUang(new MYR());
+                        valid = true;
+                        break;
+                    case "JPY": 
+                        MataUang.setMataUang(new JPY()); 
+                        valid = true;
+                        break;
+                    default:
+                        System.out.println("Error: Mata uang tidak ditemukan. Coba lagi.");
+                        continue;
+                }
+            }
+
+            // Memilih metode pembayaran
+            Pembayaran pembayaran = null;
+
+            while (pembayaran == null) {
+                System.out.println("Pilih metode pembayaran: \nTunai\nQRIS\nEMoney");
+                String pilih = input.next().toUpperCase();
+        
+                switch (pilih) {
+                    case "TUNAI":
+                        pembayaran = new Tunai();
+                        pembayaran.bayar(input, pesananMinuman, pesananMakanan, memberAktif);
+                        break;
+                    case "QRIS":
+                        pembayaran = new QRIS();
+                        pembayaran.bayar(input, pesananMinuman, pesananMakanan, memberAktif);
+                        break;
+                    case "EMONEY":
+                        pembayaran = new EMoney();
+                        pembayaran.bayar(input, pesananMinuman, pesananMakanan, memberAktif);
+                        break;
+                    default:
+                        System.out.println("Error: Metode pembayaran tidak ditemukan. Coba lagi.");
+                        continue;
+                }
+            }
+
+            Display.displayKuitansi(pembayaran, pesananMinuman, pesananMakanan, memberAktif);
+            
+            // Pause sebelum lanjut ke pelanggan berikutnya
+            System.out.println("Melanjutkan ke pelanggan berikutnya...");
+            input.nextLine();
         }
 
-        // Memilih mata uang
-        boolean valid = false;
-        while (!valid) {
-            System.out.println("Pilih mata uang pembayaran: \nUSD\nEUR\nMYR\nJPY");
-            String pilih = input.next().toUpperCase();
-            
-            switch (pilih) {
-                case "USD": 
-                    MataUang.setMataUang(new USD()); 
-                    valid = true;
-                    break;
-                case "EUR": 
-                    MataUang.setMataUang(new EUR()); 
-                    valid = true;
-                    break;
-                case "MYR": 
-                    MataUang.setMataUang(new MYR());
-                    valid = true;
-                    break;
-                case "JPY": 
-                    MataUang.setMataUang(new JPY()); 
-                    valid = true;
-                    break;
-                default:
-                    System.out.println("Error: Mata uang tidak ditemukan. Coba lagi.");
-                continue;
-            }
-        }
-
-        // Memilih metode pembayaran
-        Pembayaran pembayaran = null;
-
-        while (pembayaran == null) {
-            System.out.println("Pilih metode pembayaran: \nTunai\nQRIS\nEMoney");
-            String pilih = input.next().toUpperCase();
-    
-            switch (pilih) {
-                case "TUNAI":
-                    pembayaran = new Tunai();
-                    pembayaran.bayar(input, pesananMinuman, pesananMakanan);
-                    break;
-                case "QRIS":
-                    pembayaran = new QRIS();
-                    pembayaran.bayar(input, pesananMinuman, pesananMakanan);
-                    break;
-                case "EMONEY":
-                    pembayaran = new EMoney();
-                    pembayaran.bayar(input, pesananMinuman, pesananMakanan);
-                    break;
-                default:
-                    System.out.println("Error: Metode pembayaran tidak ditemukan. Coba lagi.");
-                    continue;
-            }
-            
-        }
-
-        Display.displayKuitansi(pembayaran, pesananMinuman, pesananMakanan);
+        // Display proses tim dapur
+        timDapur.prosesPesanan();
 
         input.close();
     }

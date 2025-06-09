@@ -1,13 +1,16 @@
 package mata_uang;
 
-public class MataUang {
-    private static IMataUang mataUangDipilih;
+public abstract class MataUang {
+    private static MataUang mataUang;
 
-    public static void setMataUang(IMataUang mataUang) {
-        mataUangDipilih = mataUang;
+    public static void setMataUang(MataUang mataUang) {
+        MataUang.mataUang = mataUang;
     }
 
-    public static IMataUang getMataUang() {
-        return mataUangDipilih;
+    public static MataUang getMataUang() {
+        return mataUang;
     }
+
+    public abstract double konversiDariIDR(double jumlah);
+
 }

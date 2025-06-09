@@ -25,6 +25,16 @@ public abstract class Menu {
 
     public int getHarga() {
         return harga;
-    }   
+    }
+    
+    public static Menu getMenuByKode(String kode) {
+        Makanan mkn = Makanan.getMakananByKode(kode);
+        if (mkn != null) return mkn;
+    
+        Minuman mnm = Minuman.getMinumanByKode(kode);
+        if (mnm != null) return mnm; 
 
+        return null;
+    }
+    
 }

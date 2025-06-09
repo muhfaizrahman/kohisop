@@ -1,9 +1,15 @@
 package perhitungan;
 
 import pemesanan.*;
+import membership.Member;
 import menu.*;
 
 public class Perhitungan {
+    private static Member memberAktif;
+
+    public static void setMemberAktif(Member member) {
+        memberAktif = member;
+    }
 
     // Hitung total harga satu item pesanan (harga * kuantitas)
     public static double hitungTotalPerMenu(MenuPesanan pesanan, String kode) {
@@ -33,6 +39,11 @@ public class Perhitungan {
 
     // Dapatkan persentase pajak dari suatu item berdasarkan kategori dan harga
     public static double getPersentasePajak(MenuPesanan pesanan, String kode) {
+        // Jika ada "A" di kode member, maka tidak ada pajak
+        if (memberAktif != null && memberAktif.getKode().contains("A")) {
+            return 0;
+        }
+        
         double harga = getHargaByKode(pesanan, kode);
 
         if (pesanan instanceof PesananMinuman) {

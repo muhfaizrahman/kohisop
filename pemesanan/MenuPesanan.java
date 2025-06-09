@@ -1,6 +1,5 @@
 package pemesanan;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import menu.*;
@@ -21,13 +20,13 @@ public abstract class MenuPesanan {
 
     public abstract List<? extends Menu> getDaftarMenu();
 
+    public List<ItemPesanan> getRincianPesanan() {
+        return pesananList;
+    }
+
     public String getKategori() {
         return kategori;
     }
-
-    public List<ItemPesanan> getRincianPesanan() {
-        return pesananList;
-    };
 
     public void pesan(String kode) {
         Scanner input = new Scanner(System.in);
@@ -46,7 +45,7 @@ public abstract class MenuPesanan {
             return;
         }
 
-        // Kalau item sudah ada di pesananList, kita ambil referensinya:
+        // Kalau item sudah ada di pesananList, ambil referensinya:
         ItemPesanan existing = null;
         for (ItemPesanan ip : pesananList) {
             if (ip.getKode().equalsIgnoreCase(kode)) {
