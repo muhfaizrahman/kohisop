@@ -2,14 +2,30 @@ package membership;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MemberService {
+
+    // Kode generator
+    private static final String CHAR_POOL = "ABCDEF0123456789";
+    private static final int PANJANG_KODE = 6;
+
+    public static String generateKode() {
+        StringBuilder kode = new StringBuilder();
+        Random rand = new Random();
+
+        for (int i = 0; i < PANJANG_KODE; i++) {
+            int index = rand.nextInt(CHAR_POOL.length());
+            kode.append(CHAR_POOL.charAt(index));
+        }
+        return kode.toString();
+    }
 
     // Database member
     private static List<Member> databaseMember = new ArrayList<>();
 
     public static void daftarMemberBaru(String nama) {
-        String kode = KodeGenerator.generateKode();
+        String kode = MemberService.generateKode();
         Member member = new Member(kode, nama);
         databaseMember.add(member);
     }
@@ -42,4 +58,5 @@ public class MemberService {
         else return member.getPoin() * 2;
         
     }
+    
 }
