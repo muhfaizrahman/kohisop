@@ -87,28 +87,32 @@ public class Display {
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
 
         if (member != null) {
-            // Handle member registration and points
-            if (member.getKode().equals("TEMP")) {
-                // Register new member
-                MemberService.daftarMemberBaru(member.getNama());
-                // Get new member reference
-                Member newMember = MemberService.cariMemberByNama(member.getNama());
-                // Transfer existing points
-                newMember.tambahPoin(member.getPoin());
-                // Update member reference
-                member = newMember;
-            }
-        
             System.out.printf("| %-50s: %10d %54s |\n", "Poin sebelum transaksi", member.getPoin(), "");
+            
+            // Calculate points before member registration
+            double poinDapat = 0;
+            poinDapat = MemberService.hitungPoinDapat(totalHargaIDR, member);
             if (mataUang instanceof mata_uang.IDR) {
                 double poinPakai = MemberService.hitungPoinPakai(totalHargaIDR, member);
                 if (poinPakai > totalHargaIDR) 
                     member.tambahPoin(-(int) (poinPakai / 2)); // Deduct points used
             }
-            
-            // Add points for member
-            double poinDapat = MemberService.hitungPoinDapat(totalHargaIDR, member);
-            member.tambahPoin((int) poinDapat);
+
+            // Handle member registration
+            if (member.getKode().equals("TEMP")) {
+                // Register new member
+                MemberService.daftarMemberBaru(member.getNama());
+                // Get new member reference
+                Member newMember = MemberService.cariMemberByNama(member.getNama());
+                // Transfer existing points and add new points
+                newMember.tambahPoin(member.getPoin() + (int)poinDapat);
+                // Update member reference
+                member = newMember;
+            } else {
+                // Add points for existing member
+                member.tambahPoin((int)poinDapat);
+            }
+
             System.out.printf("| %-50s: %10d %54s |\n", "Poin setelah transaksi", member.getPoin(), "");
 
         }

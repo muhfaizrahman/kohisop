@@ -46,7 +46,8 @@ public class MemberService {
     // Logic poin
     public static int hitungPoinDapat(double totalBelanja, Member member) {
         int poin = (int) totalBelanja / 10;
-        if (member.getKode().contains("A")) {
+        // Only apply bonus for registered members (non-TEMP)
+        if (!member.getKode().equals("TEMP") && member.getKode().contains("A")) {
             System.out.printf("| Bonus: Poin dilipatgandakan karena member memiliki kode A %-59s |\n", "");
             poin *= 2;
         }
