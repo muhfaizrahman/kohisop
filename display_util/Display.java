@@ -87,6 +87,18 @@ public class Display {
         System.out.printf("|%-117s|\n", "-----------------------------------------------------------------------------------------------------------------------");
 
         if (member != null) {
+            // Handle member registration and points
+            if (member.getKode().equals("TEMP")) {
+                // Register new member
+                MemberService.daftarMemberBaru(member.getNama());
+                // Get new member reference
+                Member newMember = MemberService.cariMemberByNama(member.getNama());
+                // Transfer existing points
+                newMember.tambahPoin(member.getPoin());
+                // Update member reference
+                member = newMember;
+            }
+        
             System.out.printf("| %-50s: %10d %54s |\n", "Poin sebelum transaksi", member.getPoin(), "");
             if (mataUang instanceof mata_uang.IDR) {
                 double poinPakai = MemberService.hitungPoinPakai(totalHargaIDR, member);
@@ -98,6 +110,7 @@ public class Display {
             double poinDapat = MemberService.hitungPoinDapat(totalHargaIDR, member);
             member.tambahPoin((int) poinDapat);
             System.out.printf("| %-50s: %10d %54s |\n", "Poin setelah transaksi", member.getPoin(), "");
+
         }
         
         System.out.printf("| %-50s: %10.2f%% %54s|\n", "Diskon channel pembayaran " + pembayaran.getClass().getSimpleName(), pembayaran.getDiskon() * 100, "");

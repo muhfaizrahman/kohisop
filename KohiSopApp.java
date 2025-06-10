@@ -38,11 +38,13 @@ public class KohiSopApp {
             System.out.println("Selamat datang di KohiSop! Silakan input nama anda: ");
             String namaPelanggan = input.nextLine();
 
-            if (MemberService.cariMemberByNama(namaPelanggan) == null) {
-                MemberService.daftarMemberBaru(namaPelanggan);
-            } 
-            
+            // Cek apakah customer merupakan member
             memberAktif = MemberService.cariMemberByNama(namaPelanggan);
+            if (memberAktif == null) {
+                // Membuat temporary member untuk customer pertama kali
+                memberAktif = new Member("TEMP", namaPelanggan);
+            }
+            
             System.out.println("Poin member saat ini: " + memberAktif.getPoin());
             
             // Set member state sekarang (current)

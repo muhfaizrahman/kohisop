@@ -31,7 +31,7 @@ public class Tunai extends Pembayaran {
             } 
         }
 
-        // lanjut ke proses input uang tunai
+        // Bayar
         while (true) {
             double totalHargaMataUangLain = mataUang.konversiDariIDR(totalHargaIDR);
             System.out.printf("Total tagihan adalah : %.2f %s\n", totalHargaMataUangLain, mataUang.getClass().getSimpleName());
